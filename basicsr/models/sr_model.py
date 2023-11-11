@@ -2,7 +2,7 @@ import torch
 from collections import OrderedDict
 from os import path as osp
 from tqdm import tqdm
-
+import os
 from basicsr.archs import build_network
 from basicsr.losses import build_loss
 from basicsr.metrics import calculate_metric
@@ -219,14 +219,17 @@ class SRModel(BaseModel):
 
             if save_img:
                 if self.opt['is_train']:
-                    save_img_path = osp.join(self.opt['path']['visualization'], img_name,
+                    #CHANGE FROM ORIGINAL
+                    save_img_path = osp.join(os.environ.get('TENSORBOARD_LOGS_PATH'), img_name,
                                              f'{img_name}_{current_iter}.png')
                 else:
                     if self.opt['val']['suffix']:
-                        save_img_path = osp.join(self.opt['path']['visualization'], dataset_name,
+                        #CHANGE FROM ORIGINAL
+                        save_img_path = osp.join(os.environ.get('TENSORBOARD_LOGS_PATH'), dataset_name,
                                                  f'{img_name}_{self.opt["val"]["suffix"]}.png')
                     else:
-                        save_img_path = osp.join(self.opt['path']['visualization'], dataset_name,
+                        #CHANGE FROM ORIGINAL
+                        save_img_path = osp.join(os.environ.get('TENSORBOARD_LOGS_PATH'), dataset_name,
                                                  f'{img_name}_{self.opt["name"]}.png')
                 imwrite(sr_img, save_img_path)
 

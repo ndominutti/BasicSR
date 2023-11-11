@@ -23,6 +23,7 @@ def init_tb_loggers(opt):
         init_wandb_logger(opt)
     tb_logger = None
     if opt['logger'].get('use_tb_logger') and 'debug' not in opt['name']:
+        #CHANGE FROM ORIGINAL
         tb_logger = init_tb_logger(log_dir=os.environ.get('TENSORBOARD_LOGS_PATH'))#osp.join(opt['root_path'], 'tb_logger', opt['name']))
     return tb_logger
 
