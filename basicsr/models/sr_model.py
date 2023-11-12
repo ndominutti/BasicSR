@@ -232,7 +232,10 @@ class SRModel(BaseModel):
                         save_img_path = osp.join(os.environ.get('TENSORBOARD_LOGS_PATH'), dataset_name,
                                                  f'{img_name}_{self.opt["name"]}.png')
                 imwrite(sr_img, save_img_path)
-
+            #CHANGE FROM ORIGINAL
+            if tb_logger:
+                tb_logger.add_images(f'{img_name}_{self.opt["name"]}.png', sr_img, global_step=current_iter)
+                
             if with_metrics:
                 # calculate metrics
                 for name, opt_ in self.opt['val']['metrics'].items():
@@ -251,6 +254,8 @@ class SRModel(BaseModel):
 
             self._log_validation_metric_values(current_iter, dataset_name, tb_logger)
 
+
+    
     def _log_validation_metric_values(self, current_iter, dataset_name, tb_logger):
         log_str = f'Validation {dataset_name}\n'
         for metric, value in self.metric_results.items():
