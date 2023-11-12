@@ -192,7 +192,7 @@ def train_pipeline(root_path):
                 if len(val_loaders) > 1:
                     logger.warning('Multiple validation datasets are *only* supported by SRModel.')
                 for val_loader in val_loaders:
-                    model.validation(val_loader, current_iter, tb_logger, opt['val']['save_img'])
+                    model.validation(val_loader, current_iter, tb_logger, opt['val']['save_img'], opt['val']['idx_imgs_to_save'])
 
             data_timer.start()
             iter_timer.start()
@@ -207,7 +207,7 @@ def train_pipeline(root_path):
     model.save(epoch=-1, current_iter=-1)  # -1 stands for the latest
     if opt.get('val') is not None:
         for val_loader in val_loaders:
-            model.validation(val_loader, current_iter, tb_logger, opt['val']['save_img'])
+            model.validation(val_loader, current_iter, tb_logger, opt['val']['save_img'], opt['val']['idx_imgs_to_save'])
     if tb_logger:
         tb_logger.close()
 

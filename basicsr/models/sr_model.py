@@ -181,7 +181,7 @@ class SRModel(BaseModel):
         if self.opt['rank'] == 0:
             self.nondist_validation(dataloader, current_iter, tb_logger, save_img)
 
-    def nondist_validation(self, dataloader, current_iter, tb_logger, save_img):
+    def nondist_validation(self, dataloader, current_iter, tb_logger, save_img, idx_imgs_to_save):
         dataset_name = dataloader.dataset.opt['name']
         with_metrics = self.opt['val'].get('metrics') is not None
         use_pbar = self.opt['val'].get('pbar', False)
@@ -198,7 +198,7 @@ class SRModel(BaseModel):
         metric_data = dict()
         if use_pbar:
             pbar = tqdm(total=len(dataloader), unit='image')
-
+            
         for idx, val_data in enumerate(dataloader):
             img_name = osp.splitext(osp.basename(val_data['lq_path'][0]))[0]
             self.feed_data(val_data)
@@ -217,24 +217,25 @@ class SRModel(BaseModel):
             del self.output
             torch.cuda.empty_cache()
 
-            if save_img:
-                if self.opt['is_train']:
-                    #CHANGE FROM ORIGINAL
-                    save_img_path = osp.join(os.environ.get('TENSORBOARD_LOGS_PATH'), img_name,
-                                             f'{img_name}_{current_iter}.png')
-                else:
-                    if self.opt['val']['suffix']:
+            if idx_imgs_to_save is None or idx in idx_imgs_to_save:
+                if save_img:
+                    if self.opt['is_train']:
                         #CHANGE FROM ORIGINAL
-                        save_img_path = osp.join(os.environ.get('TENSORBOARD_LOGS_PATH'), dataset_name,
-                                                 f'{img_name}_{self.opt["val"]["suffix"]}.png')
+                        save_img_path = osp.join(os.environ.get('TENSORBOARD_LOGS_PATH'), img_name,
+                                                 f'{img_name}_{current_iter}.png')
                     else:
-                        #CHANGE FROM ORIGINAL
-                        save_img_path = osp.join(os.environ.get('TENSORBOARD_LOGS_PATH'), dataset_name,
-                                                 f'{img_name}_{self.opt["name"]}.png')
-                imwrite(sr_img, save_img_path)
-            #CHANGE FROM ORIGINAL
-            if tb_logger:
-                tb_logger.add_images(f'{img_name}_{self.opt["name"]}.png', visuals['result'], global_step=current_iter)
+                        if self.opt['val']['suffix']:
+                            #CHANGE FROM ORIGINAL
+                            save_img_path = osp.join(os.environ.get('TENSORBOARD_LOGS_PATH'), dataset_name,
+                                                     f'{img_name}_{self.opt["val"]["suffix"]}.png')
+                        else:
+                            #CHANGE FROM ORIGINAL
+                            save_img_path = osp.join(os.environ.get('TENSORBOARD_LOGS_PATH'), dataset_name,
+                                                     f'{img_name}_{self.opt["name"]}.png')
+                    imwrite(sr_img, save_img_path)
+                #CHANGE FROM ORIGINAL
+                if tb_logger:
+                    tb_logger.add_images(f'{img_name}_{self.opt["name"]}.png', visuals['result'], global_step=current_iter)
                 
             if with_metrics:
                 # calculate metrics
