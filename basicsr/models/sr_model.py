@@ -234,7 +234,7 @@ class SRModel(BaseModel):
                 imwrite(sr_img, save_img_path)
             #CHANGE FROM ORIGINAL
             if tb_logger:
-                tb_logger.add_images(f'{img_name}_{self.opt["name"]}.png', sr_img, global_step=current_iter)
+                tb_logger.add_images(f'{img_name}_{self.opt["name"]}.png', visuals['result'], global_step=current_iter)
                 
             if with_metrics:
                 # calculate metrics
