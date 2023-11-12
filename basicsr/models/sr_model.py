@@ -177,9 +177,9 @@ class SRModel(BaseModel):
 
         self.output = output.mean(dim=0, keepdim=True)
 
-    def dist_validation(self, dataloader, current_iter, tb_logger, save_img):
+    def dist_validation(self, dataloader, current_iter, tb_logger, save_img, idx_imgs_to_save):
         if self.opt['rank'] == 0:
-            self.nondist_validation(dataloader, current_iter, tb_logger, save_img)
+            self.nondist_validation(dataloader, current_iter, tb_logger, save_img, idx_imgs_to_save)
 
     def nondist_validation(self, dataloader, current_iter, tb_logger, save_img, idx_imgs_to_save):
         dataset_name = dataloader.dataset.opt['name']
