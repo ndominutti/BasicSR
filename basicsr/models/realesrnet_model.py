@@ -182,8 +182,8 @@ class RealESRNetModel(SRModel):
                 self.gt = data['gt'].to(self.device)
                 self.gt_usm = self.usm_sharpener(self.gt)
 
-    def nondist_validation(self, dataloader, current_iter, tb_logger, save_img):
+    def nondist_validation(self, dataloader, current_iter, tb_logger, save_img, idx_imgs_to_save):
         # do not use the synthetic process during validation
         self.is_train = False
-        super(RealESRNetModel, self).nondist_validation(dataloader, current_iter, tb_logger, save_img)
+        super(RealESRNetModel, self).nondist_validation(dataloader, current_iter, tb_logger, save_img, idx_imgs_to_save)
         self.is_train = True
